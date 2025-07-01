@@ -43,4 +43,5 @@ meta:
     entrypoint: main
 created_at: 2025-03-11T17:29:03.1834361+08:00
 privacy: PRIVACY.md
+repo: https://github.com/lework/dify-plugin-prometheus.git
 verified: false
