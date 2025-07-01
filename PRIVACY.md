@@ -1,20 +1,20 @@
-# 隐私政策
+# Privacy Policy
 
-本插件会收集以下信息来提供 Prometheus 查询服务：
+This plugin collects the following information to provide Prometheus query services:
 
-1. **Prometheus 服务器连接信息**：
+1. **Prometheus Server Connection Information**:
 
-   - Prometheus 服务器 URL
-   - 如提供，用于认证的用户名、密码或令牌
+   - Prometheus server URL
+   - If provided, username, password, or token for authentication
 
-2. **查询参数**：
-   - PromQL 查询语句
-   - 查询的时间范围和步长
+2. **Query Parameters**:
+   - PromQL query statements
+   - Query time range and step size
 
-本插件不会：
+This plugin does not:
 
-- 存储用户的查询历史
-- 收集其他与查询无关的信息
-- 将数据发送到第三方服务（除了用户自己配置的 Prometheus 服务器）
+- Store user query history
+- Collect other information unrelated to queries
+- Send data to third-party services (except for the Prometheus server configured by the user)
 
-您的凭证信息（密码和令牌）将被安全加密存储。
+Your credential information (passwords and tokens) will be securely encrypted and stored.

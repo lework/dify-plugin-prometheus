@@ -2,9 +2,9 @@ identity:
   name: prometheus
   author: lework
   label:
-    en_US: prometheus
+    en_US: Prometheus
     zh_Hans: Prometheus 指标数据查询
-    pt_BR: prometheus
+    pt_BR: Prometheus
 description:
   human:
     en_US: Query Prometheus metrics using PromQL
@@ -54,6 +54,7 @@ parameters:
   - name: step
     type: string
     required: false
+    default: '15s'
     label:
       en_US: Step
       zh_Hans: 步长
@@ -63,6 +64,58 @@ parameters:
       zh_Hans: 查询分辨率步长，以持续时间格式表示（如'15s', '1m', '1h'）
       pt_BR: Query resolution step width in duration format
     llm_description: Query resolution step width in duration format (e.g. '15s', '1m', '1h')
+    form: llm
+  - name: api_url
+    type: secret-input
+    required: false
+    label:
+      en_US: Prometheus API URL
+      zh_Hans: Prometheus API URL
+      pt_BR: URL da API do Prometheus
+    human_description:
+      en_US: The URL of the Prometheus API, if not configured, use the default value
+      zh_Hans: Prometheus API的URL, 如果未配置，则使用默认值
+      pt_BR: URL da API do Prometheus, se não configurado, use o valor padrão
+    llm_description: The URL of the Prometheus API, if not configured, use the default value
+    form: llm
+  - name: username
+    type: secret-input
+    required: false
+    label:
+      en_US: Prometheus API Username
+      zh_Hans: Prometheus API用户名
+      pt_BR: Nome de usuário da API do Prometheus
+    human_description:
+      en_US: Username for basic authentication (optional), if not configured, use the default value
+      zh_Hans: Prometheus API的基本认证的用户名（可选）, 如果未配置，则使用默认值
+      pt_BR: Nome de usuário para autenticação básica (opcional), se não configurado, use o valor padrão
+    llm_description: The username for basic authentication (optional), if not configured, use the default value
+    form: llm
+  - name: password
+    type: secret-input
+    required: false
+    label:
+      en_US: Prometheus API Password
+      zh_Hans: Prometheus API密码
+      pt_BR: Senha da API do Prometheus
+    human_description:
+      en_US: Password for basic authentication (optional), if not configured, use the default value
+      zh_Hans: Prometheus API的基本认证的密码（可选）, 如果未配置，则使用默认值
+      pt_BR: Senha para autenticação básica (opcional), se não configurado, use o valor padrão
+    llm_description: The password for basic authentication (optional), if not configured, use the default value
+    form: llm
+  - name: token
+    type: secret-input
+    required: false
+    label:
+      en_US: Prometheus API Token
+      zh_Hans: Prometheus API令牌
+      pt_BR: Token da API do Prometheus
+    human_description:
+      en_US: Token for basic authentication (optional), if not configured, use the default value
+      zh_Hans: Prometheus API的基本认证的令牌（可选）, 如果未配置，则使用默认值
+      pt_BR: Token para autenticação básica (opcional), se não configurado, use o valor padrão
+    llm_description: The token for basic authentication (optional), if not configured, use the default value
     form: llm
 extra:
   python:

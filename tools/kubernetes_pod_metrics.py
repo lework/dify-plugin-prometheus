@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from typing import Any, Optional, Dict, List, Union
+from typing import Any, Dict, List
 import datetime
 import requests
 import re
@@ -26,14 +26,19 @@ class KubernetesPodMetricsTool(Tool):
         step = tool_parameters.get("step", "1m")
         
         # 获取Prometheus连接信息
-        api_url = self.runtime.credentials["api_url"]
-        username = self.runtime.credentials.get('username', '')
-        password = self.runtime.credentials.get('password', '')
-        token = self.runtime.credentials.get('token', '')
+        api_url = tool_parameters.get("api_url")
+        username = tool_parameters.get("username")
+        password = tool_parameters.get("password")
+        token = tool_parameters.get("token")
 
         if not api_url:
-            yield self.create_text_message("未配置Prometheus API URL")
-            return
+            api_url = self.runtime.credentials.get("api_url", '')
+            username = self.runtime.credentials.get('username', '')
+            password = self.runtime.credentials.get('password', '')
+            token = self.runtime.credentials.get('token', '')
+
+        if not api_url:
+            raise InvokeServerUnavailableError("required api_url")
         
         # 构建认证头
         headers = {}
@@ -61,11 +66,11 @@ class KubernetesPodMetricsTool(Tool):
                 markdown_table = self._create_markdown_table(pod_data)
                 yield self.create_text_message(markdown_table)
             else:
-                yield self.create_text_message("未找到符合条件的Pod")
+                yield self.create_text_message("no pod found")
             
         except Exception as e:
             traceback.print_exc()
-            raise InvokeServerUnavailableError(f"获取Pod资源指标时发生错误：{str(e)}") from e
+            raise InvokeServerUnavailableError(f"get pod metrics error: {str(e)}") from e
             
     def _parse_time_range(self, start_time: str, end_time: str) -> tuple:
         """解析时间范围参数，支持相对时间和绝对时间"""
@@ -127,7 +132,7 @@ class KubernetesPodMetricsTool(Tool):
                     selector_filter += f', {k}="{v}"'
         
         # 1. 获取pod列表 - 使用kube_pod_info指标
-        pod_query = 'kube_pod_info'
+        pod_query = 'kube_pod_labels'
         if namespace_filter or selector_filter or pod_name_pattern:
             pod_query += '{' + namespace_filter
 

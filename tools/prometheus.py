@@ -1,7 +1,6 @@
 from collections.abc import Generator
-from typing import Any, Optional, Dict, List, Union
+from typing import Any, Optional, Dict
 import datetime
-import json
 import requests
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
@@ -30,13 +29,19 @@ class PrometheusTool(Tool):
         step = tool_parameters.get("step", "15s")  # 默认步长15秒
         
         # 获取Prometheus服务器连接信息
-        api_url = self.runtime.credentials["api_url"]
-        username = self.runtime.credentials['username']
-        password = self.runtime.credentials['password']
-        token = self.runtime.credentials['token']
+        api_url = tool_parameters.get("api_url")
+        username = tool_parameters.get("username")
+        password = tool_parameters.get("password")
+        token = tool_parameters.get("token")
 
         if not api_url:
-            raise InvokeServerUnavailableError("请提供api_url")
+            api_url = self.runtime.credentials.get("api_url", '')
+            username = self.runtime.credentials.get('username', '')
+            password = self.runtime.credentials.get('password', '')
+            token = self.runtime.credentials.get('token', '')
+
+        if not api_url:
+            raise InvokeServerUnavailableError("required api_url")
 
         
         # 构建认证头
@@ -76,7 +81,7 @@ class PrometheusTool(Tool):
             
             # 检查响应
             if response.status_code != 200:
-                error_message = f"查询失败: HTTP {response.status_code}, {response.text}"
+                error_message = f"query failed: HTTP {response.status_code}, {response.text}"
                 yield self.create_text_message(error_message)
                 return
             
@@ -95,7 +100,7 @@ class PrometheusTool(Tool):
             
         except Exception as e:
             print(traceback.print_exc())
-            raise InvokeServerUnavailableError(f"查询过程中发生错误：{str(e)}") from e
+            raise InvokeServerUnavailableError(f"query error: {str(e)}") from e
     
     def _parse_time(self, time_str: str) -> str:
         """
@@ -153,7 +158,7 @@ class PrometheusTool(Tool):
         if "status" not in result or result["status"] != "success":
             return {
                 "success": False,
-                "error": result.get("error", "未知错误")
+                "error": result.get("error", "unknown error")
             }
         
         data = result.get("data", {})
@@ -256,7 +261,7 @@ class PrometheusTool(Tool):
                 continue
         
         if not latest_data_points:
-            return "未找到可用数据"
+            return "no data found"
         
         # 创建DataFrame
         df = pd.DataFrame(latest_data_points)
@@ -295,7 +300,7 @@ class PrometheusTool(Tool):
                 
                 grouped_data.append(f"{table}")
             except Exception as e:
-                grouped_data.append(f"### {metric}\n\n无法生成表格: {str(e)}")
+                grouped_data.append(f"### {metric}\n\ncannot generate table: {str(e)}")
         
         # 合并所有表格
         if grouped_data:
