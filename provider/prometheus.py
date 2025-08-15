@@ -26,7 +26,7 @@ class PrometheusProvider(ToolProvider):
                 headers["Authorization"] = f"Basic {base64_auth}"
             
             # 如果提供了令牌，则添加到请求头中
-            if "token" in credentials:
+            if credentials.get("token", None):
                 headers["Authorization"] = f"Bearer {credentials['token']}"
             
             # 测试连接
